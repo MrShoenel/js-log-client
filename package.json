@@ -1,0 +1,27 @@
+{
+  "name": "sh.log-client",
+  "version": "1.0.3",
+  "description": "A generic node.js client to log messages cross-platform. Its compliment, 'LogCentral', is a .Net-based server that offers various transport mechanisms and collects messages from arbitrary many clients.",
+  "main": "index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrShoenel/js-log-client.git"
+  },
+  "keywords": [
+    "logging",
+    "log",
+    "client"
+  ],
+  "author": "Sebastian Hönel <development@hoenel.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MrShoenel/js-log-client/issues"
+  },
+  "homepage": "https://github.com/MrShoenel/js-log-client#readme",
+  "dependencies": {
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
+  }
+}
