@@ -3,3 +3,6 @@ LogClient (or: `log-client`) is a universal module for nodejs or JavaScript appl
 
 ## Transport methods
 * HTTP(s): Currently, messages can be logged using http(s) to a distant server.
+
+## Install via npm
+`npm install sh.log-client`
