@@ -2,7 +2,10 @@ require('../docs.js');
 
 const reqProm = require('request-promise');
 
-module.exports = class Transporter {
+/**
+ * @author Sebastian Hönel <development@hoenel.net>
+ */
+class Transporter {
   /**
    * 
    * @param {TransportConf|HttpTransport} conf 
@@ -15,9 +18,9 @@ module.exports = class Transporter {
    * Transports the logging object using the configured transport.
    * 
    * @param {LogObject} logObj 
-   * @returns {Promise.<void>}
+   * @returns {void}
    */
-  transport(logObj) {
+  async transport(logObj) {
     if (this.conf.method.type === 'http') {
       return this._transportHttp(logObj);
     }
@@ -36,3 +39,7 @@ module.exports = class Transporter {
     });
   };
 };
+
+module.exports = Object.freeze({
+  Transporter
+});

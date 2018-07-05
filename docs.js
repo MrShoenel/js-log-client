@@ -1,7 +1,7 @@
 /**
  * @typedef TransportMethod
  * @type {object}
- * @property {'http'} type - currently, only 'http'(s) is supported through HttpTransport
+ * @property {'http'|'console'} type 'http'(s) is supported through HttpTransport and 'console'
  */
 
 /**
