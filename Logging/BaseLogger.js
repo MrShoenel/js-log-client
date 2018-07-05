@@ -40,14 +40,14 @@ module.exports = class BaseLogger {
    * @param {any} state
    * @param {Error} error
    * @param {(state: any, error: Error) => string} formatter
-   * @returns {Promise.<any>}
+   * @returns {void}
    */
-  log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
+  async log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
     if (!this.isEnabled(logLevel)) {
       return; // We're not logging this
     }
 
-    return this.transporter.transport({
+    return await this.transporter.transport({
       logLevel,
       eventId,
       error: formatter instanceof Function ? formatter(state, error) : error,
