@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/MrShoenel/js-log-client#readme",
   "dependencies": {
+    "chalk": "^2.4.1",
     "request": "^2.87.0",
     "request-promise": "^4.2.2"
   }
