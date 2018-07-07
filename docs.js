@@ -59,3 +59,13 @@ const LogLevel = {
   Critical: 5,
   None: 6
 };
+
+
+
+/**
+ * @typedef ConsoleLogConf
+ * @type {Object}
+ * @property {Set.<LogLevel>} useLog
+ * @property {Set.<LogLevel>} useError
+ * @property {Set.<LogLevel>} useInfo
+ */
