@@ -1,7 +1,6 @@
 require('../docs.js');
 
-const LogLevel = require('./LogLevel')
-, Transporter = require('./Transporter');
+const LogLevel = require('./LogLevel');
 
 
 const emptyStr = '';
@@ -117,7 +116,7 @@ class BaseLogger {
       return emptyStr;
     }
 
-    const scopeVals = Array.from(this._scopeStacks.values()).reverse();
+    const scopeVals = Array.from(...this._scopeStacks.values());
     return `[${scopeVals.map(scope => scope.toString()).join(', ')}]`;
   };
 
@@ -283,7 +282,7 @@ class BaseLogger {
    * @returns {string}
    */
   get [Symbol.toStringTag] () {
-    return BaseLogger.name;
+    return this.constructor.name;
   };
 };
 
@@ -313,7 +312,15 @@ class BaseScope {
    * @returns {string}
    */
   toString() {
-    return this.scopeValue === void 0 ? emptyStr : Object.prototype.toString.call(this.scopeValue);
+    if (this.scopeValue === void 0) {
+      return emptyStr;
+    } else if (typeof this.scopeValue === 'string') {
+      return this.scopeValue;
+    } else if (typeof this.scopeValue.toString === 'function') {
+      return this.scopeValue.toString();
+    }
+
+    return JSON.stringify(this.scopeValue);
   };
 
   /**
@@ -322,7 +329,7 @@ class BaseScope {
    * @returns {string}
    */
   get [Symbol.toStringTag] () {
-    return BaseScope.name;
+    return this.constructor.name;
   };
 };
 
