@@ -46,11 +46,12 @@ class ColoredConsoleLogger extends BaseLogger {
    * @param {T|Function|string} typeOrClassOrCtorFunc The concept behind the logger
    * is that it is type-specific. There are no generics in JavaScript, so you may
    * specify a type by its name or use some context-identifying string.
-   * @param {ConsoleLogConf} stdOutErrConf
+   * @param {ConsoleLogConf} consoleConf
    */
-  constructor(typeOrClassOrCtorFunc, stdOutErrConf) {
+  constructor(typeOrClassOrCtorFunc, consoleConf = void 0) {
     super(typeOrClassOrCtorFunc);
-    this._stdOutErrConf = this._validateStdConf(stdOutErrConf);
+    this._stdOutErrConf = consoleConf === void 0 ?
+      ColoredConsoleLogger.defaultConsoleConf : this._validateConsoleConf(consoleConf);
   };
 
   /**
@@ -61,12 +62,27 @@ class ColoredConsoleLogger extends BaseLogger {
   };
 
   /**
-   * 
    * @param {ConsoleLogConf} conf
+   * @throws {Error} if the configuration's properties are not sets
    * @returns {ConsoleLogConf}
    */
-  _validateStdConf(conf) {
-    // TODO: Implement this
+  _validateConsoleConf(conf) {
+    if (!conf) {
+      throw new Error('The given configuration is not valid.');
+    }
+
+    const ho = p => Object.hasOwnProperty.call(conf, p);
+
+    ['useLog', 'useInfo', 'useError'].forEach(prop => {
+      if (ho(prop)) {
+        if (!(conf[prop] instanceof Set)) {
+          throw new Error(`Property '${prop}' of the configuration is not a Set!`);
+        }
+      } else {
+        conf[prop] = new Set();
+      }
+    });
+    
     return conf;
   };
 
@@ -108,72 +124,53 @@ class ColoredConsoleLogger extends BaseLogger {
     const timeString = this.logCurrentTime ? this.timeString : emptyStr
     , typeString = this.logCurrentType ? this.typeString : emptyStr
     , scopeString = this.logCurrentScope ? this.scopeString : emptyStr;
+    
+    const prefix = timeString === emptyStr && typeString == emptyStr && scopeString == emptyStr ?
+      emptyStr : `${timeString}${(`${timeString === emptyStr ? '' : ' '}${typeString}`)}${scopeString}: `;
+    const eventString = eventId === 0 || eventId.Id === 0 ?
+      emptyStr : `(${eventId.Id}, ${eventId.Name}) `;
+    // If state and exception are void 0/null, there is nothing to format.
+    // Else, check if there is a formatter and use it. If there is
+    // no formatter, call JSON.stringify() on the state and append the
+    // exception's message, if there is an exception.
+    const stateAndExString = state === void 0 && error === null ? emptyStr :
+      (formatter instanceof Function ? `${formatter(state, exception)}` :
+      (state === void 0 ? emptyStr : `${typeof state === 'string' ? state : JSON.stringify(state)}` +
+      `${(error === null ? emptyStr : `, ${error.message}`)}`));
 
-    const wholeString = ''; // TODO
+    const wholeLogString = `${prefix}${eventString}${stateAndExString}`.trim();
 
     switch (logLevel) {
       case LogLevel.Trace:
-        logMethod(Chalk.gray(wholeString));
+        logMethod(Chalk.gray(wholeLogString));
         break;
-
-        // TODO: Add other cases and colors
+      case LogLevel.Debug:
+        logMethod(Chalk.green(wholeLogString));
+        break;
+      case LogLevel.Information:
+        logMethod(Chalk.white(wholeLogString));
+        break;
+      case LogLevel.Warning:
+        logMethod(Chalk.yellow(wholeLogString));
+        break;
+      case LogLevel.Error:
+        logMethod(Chalk.red(wholeLogString));
+        break;
+      case LogLevel.Critical:
+        logMethod(Chalk.magenta(wholeLogString));
+        break;
     }
   };
 
-  /*
-  public override void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, String> formatter)
-		{
-			// cyan, green, white, magenta, red, yellow
-			if (!this.IsEnabled(logLevel))
-			{
-				return; // We're not logging this
-			}
-
-			var timeString = this.LogCurrentTime ? this.TimeString : String.Empty;
-			var typeString = this.LogCurrentType ? this.TypeString : String.Empty;
-			var scopeString = this.LogCurrentScope ? this.ScopeString : String.Empty;
-
-			var prefix = timeString == String.Empty && typeString == String.Empty && scopeString == String.Empty ?
-				String.Empty : $"{timeString}{typeString}{scopeString}: ";
-			var eventString = eventId.Id == 0 ? String.Empty : $"({ eventId.Id }, { eventId.Name }) ";
-			// If state and exception are null, there is nothing to format.
-			// Else, check if there is a formatter and use it. If there is
-			// no formatter, call ToString() on the state and append the
-			// exception's message, if there is an exception.
-			var stateAndExString = state == null && exception == null ? String.Empty :
-				(formatter is Func<TState, Exception, String> ? $"{ formatter(state, exception) }" :
-				(state == null ? String.Empty : $"{ state.ToString() }, " +
-				$"{ (exception == null ? String.Empty : exception.Message) }"));
-
-			var wholeLogString = $"{prefix}{eventString}{stateAndExString}".Trim();
-
-			using (var colorScope = CC.WithColorScope())
-			{
-				// Crit, Debug, Err, info, none, trace, warn
-				switch (logLevel)
-				{
-					case LogLevel.Trace:
-						CC.GrayLine(wholeLogString);
-						break;
-					case LogLevel.Debug:
-						CC.GreenLine(wholeLogString);
-						break;
-					case LogLevel.Information:
-						CC.WhiteLine(wholeLogString);
-						break;
-					case LogLevel.Warning:
-						CC.YellowLine(wholeLogString);
-						break;
-					case LogLevel.Error:
-						CC.RedLine(wholeLogString);
-						break;
-					case LogLevel.Critical:
-						CC.MagentaLine(wholeLogString);
-						break;
-				}
-			}
-		} */
-
+  /**
+   * So that Object.prototype.toString.call(new ColoredConsoleLogger())
+   * results in [object ColoredConsoleLogger].
+   * 
+   * @returns {string}
+   */
+  get [Symbol.toStringTag] () {
+    return this.constructor.name;
+  };
 };
 
 
