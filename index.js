@@ -1,13 +1,13 @@
 require('./docs.js');
 
 const LogLevel = require('./Logging/LogLevel')
-, BaseLogger = require('./Logging/BaseLogger')
-, { Transporter } = require('./Logging/Transporter')
-, { ConsoleTransporter } = require('./Logging/ConsoleTransporter');
+, { BaseLogger, BaseScope } = require('./Logging/BaseLogger')
+, { ColoredConsoleLogger} = require('./Logging/ColoredConsoleLogger');
 
-module.exports = {
+
+module.exports = Object.freeze({
   LogLevel,
   BaseLogger,
-  Transporter,
-  ConsoleTransporter
-};
+  BaseScope,
+  ColoredConsoleLogger
+});
