@@ -19,8 +19,8 @@ class BaseLogger {
    */
   constructor(typeOrClassOrCtorFunc) {
     this._type = typeOrClassOrCtorFunc;
-    if (typeof typeOrClassOrCtorFunc !== 'function') {
-      throw new Error(`The given type, class or constructor function '${JSON.stringify(typeOrClassOrCtorFunc)}' is not a function.`);
+    if (typeof typeOrClassOrCtorFunc !== 'function' && typeof typeOrClassOrCtorFunc !== 'string') {
+      throw new Error(`The given type, class or constructor is not a string or (constructor-) function: '${JSON.stringify(typeOrClassOrCtorFunc)}'.`);
     }
 
     this._logLevel = LogLevel.Information;
@@ -105,7 +105,15 @@ class BaseLogger {
    * @returns {string}
    */
   get typeString() {
-    return `[${this.type.name}]`;
+    let tName = null;
+    if (typeof this.type === 'string') {
+      tName = this.type;
+    } else if (typeof this.type === 'function') {
+      tName = this.type.name;
+    } else {
+      throw new Error(`Cannot represent the type of this logger as string.`);
+    }
+    return `[${tName}]`;
   };
 
   /**

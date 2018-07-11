@@ -1,6 +1,6 @@
 {
   "name": "sh.log-client",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A generic node.js client to log messages cross-platform. Its compliment, 'LogCentral', is a .Net-based server that offers various transport mechanisms and collects messages from arbitrary many clients.",
   "main": "index.js",
   "scripts": {},
