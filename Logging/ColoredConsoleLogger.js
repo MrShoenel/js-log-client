@@ -10,6 +10,8 @@ const { BaseLogger } = require('./BaseLogger')
 
 /**
  * @type {ConsoleLogConf}
+ * 
+ * @author Sebastian Hönel <development@hoenel.net>
  */
 const ConsoleConfDefault = {
   useLog: new Set(Array.of(
@@ -30,6 +32,8 @@ const ConsoleConfDefault = {
 
 /**
  * @template T
+ * 
+ * @author Sebastian Hönel <development@hoenel.net>
  */
 class ColoredConsoleLogger extends BaseLogger {
   /**
