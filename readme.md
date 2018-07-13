@@ -11,6 +11,10 @@ Currently, this client includes the following loggers:
 * __`ColoredConsoleLogger<T>`__ a logger that outputs to the console's streams (info, warning, error) and is configurable w.r.t. to which level should be logged to which stream. Also supports colors.
 * __`DevNullLogger<T>`__ a dummy logger that discards all messages and is always enabled
 
+## Write and contribute your own Loggers
+Writing an own logger is as simple as extending `BaseLogger<T>`. Please, submit a _pull-request_ if you want to contribute your own logger to this repository.
+
+
 ## Breaking changes since version 2.0.0
 The `log-client` is supposed to be a functionally equivalent implementation of the logging functionalities found in `util-dotnet` (https://github.com/MrShoenel/util-dotnet).
 The concept of `Transporter`s has been removed entirely.
