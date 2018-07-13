@@ -1,15 +1,15 @@
 require('../docs.js');
 
-const LogLevel = require('./LogLevel');
-
-
-const emptyStr = '';
+const LogLevel = require('./LogLevel')
+, emptyStr = '';
 
 
 /**
  * Provides common logging functionality for derived loggers.
  * 
  * @template T the type that uses an instance of this (or a derived) logger.
+ * 
+ * @author Sebastian Hönel <development@hoenel.net>
  */
 class BaseLogger {
   /**
@@ -297,6 +297,8 @@ class BaseLogger {
 
 /**
  * @template T
+ * 
+ * @author Sebastian Hönel <development@hoenel.net>
  */
 class BaseScope {
   /**
