@@ -3,6 +3,7 @@ require('../docs.js');
 const { BaseLogger } = require('./BaseLogger')
 , LogLevel = require('./LogLevel')
 , Chalk = require('chalk')
+, util = require('util')
 , emptyStr = '';
 
 
@@ -135,11 +136,11 @@ class ColoredConsoleLogger extends BaseLogger {
       emptyStr : `(${eventId.Id}, ${eventId.Name}) `;
     // If state and exception are void 0/null, there is nothing to format.
     // Else, check if there is a formatter and use it. If there is
-    // no formatter, call JSON.stringify() on the state and append the
+    // no formatter, call util.inspect() on the state and append the
     // exception's message, if there is an exception.
     const stateAndExString = state === void 0 && error === null ? emptyStr :
       (formatter instanceof Function ? `${formatter(state, exception)}` :
-      (state === void 0 ? emptyStr : `${typeof state === 'string' ? state : JSON.stringify(state)}` +
+      (state === void 0 ? emptyStr : `${typeof state === 'string' ? state : util.inspect(state)}` +
       `${(error === null ? emptyStr : `, ${error.message}`)}`));
 
     const wholeLogString = `${prefix}${eventString}${stateAndExString}`.trim();
@@ -164,16 +165,6 @@ class ColoredConsoleLogger extends BaseLogger {
         logMethod(Chalk.magenta(wholeLogString));
         break;
     }
-  };
-
-  /**
-   * So that Object.prototype.toString.call(new ColoredConsoleLogger())
-   * results in [object ColoredConsoleLogger].
-   * 
-   * @returns {string}
-   */
-  get [Symbol.toStringTag] () {
-    return this.constructor.name;
   };
 };
 
