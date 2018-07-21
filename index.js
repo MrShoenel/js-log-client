@@ -1,9 +1,12 @@
 require('./docs.js');
 
+
 const LogLevel = require('./Logging/LogLevel')
 , { BaseLogger, BaseScope } = require('./Logging/BaseLogger')
 , { ColoredConsoleLogger} = require('./Logging/ColoredConsoleLogger')
-, { DevNullLogger } = require('./Logging/DevNullLogger');
+, { DevNullLogger } = require('./Logging/DevNullLogger')
+, { InMemoryLogger, InMemoryLogMessage, MsgSortOrder } = require('./Logging/InMemoryLogger')
+, { DualLogger } = require('./Logging/DualLogger');
 
 
 module.exports = Object.freeze({
@@ -11,5 +14,7 @@ module.exports = Object.freeze({
   BaseLogger,
   BaseScope,
   ColoredConsoleLogger,
-  DevNullLogger
+  DevNullLogger,
+  InMemoryLogger, InMemoryLogMessage, MsgSortOrder,
+  DualLogger
 });
