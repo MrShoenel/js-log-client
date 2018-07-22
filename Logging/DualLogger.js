@@ -42,6 +42,13 @@ class DualLogger extends BaseLogger {
     this.logger1.log(logLevel, eventId, state, error, formatter);
     this.logger2.log(logLevel, eventId, state, error, formatter);
   };
+
+  /**
+   * @returns {string} Overridden, to include both generic parameters.
+   */
+  get [Symbol.toStringTag]() {
+    return `${this.constructor.name}<${this.logger1.constructor.name}<${this.logger1.typeString}>, ${this.logger2.constructor.name}<${this.logger2.typeString}>>`;
+  };
 };
 
 
