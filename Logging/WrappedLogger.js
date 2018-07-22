@@ -21,12 +21,29 @@ class WrappedLogger extends DualLogger {
     super(originalLogger.type, originalLogger, copyLogger);
     
     copyLogger._type = originalLogger.type;
-    originalLogger._scopeStacks = copyLogger._scopeStacks = this._scopeStacks;
 
     this.logLevel = originalLogger.logLevel;
     this.logCurrentTime = originalLogger.logCurrentTime;
     this.logCurrentType = originalLogger.logCurrentType;
     this.logCurrentScope = originalLogger.logCurrentScope;
+  };
+
+  /**
+   * @template TState
+   * @param {LogLevel} logLevel
+   * @param {LogEvent|number} eventId
+   * @param {TState} state
+   * @param {Error} error
+   * @param {(state: TState, error: Error) => string} formatter
+   * @returns {this}
+   */
+  log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
+    // We have to set this up every time immediately before calling log(),
+    // to avoid race-conditions when logging async with the same instance
+    // of the original- or  copy-logger.
+    this.logger1._scopeStacks = this.logger2._scopeStacks = this._scopeStacks;
+
+    super.log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null);
   };
 
   /**
@@ -54,7 +71,6 @@ class WrappedLogger extends DualLogger {
    * @param {boolean} value
    */
   set logCurrentScope(value) {
-    this.
     super.logCurrentScope = this.logger1.logCurrentScope = this.logger2.logCurrentScope = !!value;
   };
 };
