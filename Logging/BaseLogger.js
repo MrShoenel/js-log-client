@@ -290,7 +290,7 @@ class BaseLogger {
    * @returns {string}
    */
   get [Symbol.toStringTag] () {
-    return this.constructor.name;
+    return `${this.constructor.name}<${this.typeString}>`;
   };
 };
 

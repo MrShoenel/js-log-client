@@ -6,15 +6,16 @@ const LogLevel = require('./Logging/LogLevel')
 , { ColoredConsoleLogger} = require('./Logging/ColoredConsoleLogger')
 , { DevNullLogger } = require('./Logging/DevNullLogger')
 , { InMemoryLogger, InMemoryLogMessage, MsgSortOrder } = require('./Logging/InMemoryLogger')
-, { DualLogger } = require('./Logging/DualLogger');
+, { DualLogger } = require('./Logging/DualLogger')
+, { WrappedLogger } = require('./Logging/WrappedLogger');
 
 
 module.exports = Object.freeze({
   LogLevel,
-  BaseLogger,
-  BaseScope,
+  BaseLogger, BaseScope,
   ColoredConsoleLogger,
   DevNullLogger,
   InMemoryLogger, InMemoryLogMessage, MsgSortOrder,
-  DualLogger
+  DualLogger,
+  WrappedLogger
 });

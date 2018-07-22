@@ -8,6 +8,9 @@ const { BaseLogger } = require('./BaseLogger');
  * to two different sinks (i.e. to a local console and to a remote server). It is
  * perfectly fine to construct a whole graph of loggers, by using one or two dual-
  * loggers as child loggers.
+ * The DualLogger however does not modify any of the child loggers' settings nor does
+ * it consider changes made to itself or logs any scopes, as those need to be used on
+ * the child loggers. The WrappedLogger however does this.
  * 
  * @template T
  */
@@ -38,6 +41,13 @@ class DualLogger extends BaseLogger {
   log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
     this.logger1.log(logLevel, eventId, state, error, formatter);
     this.logger2.log(logLevel, eventId, state, error, formatter);
+  };
+
+  /**
+   * @returns {string} Overridden, to include both generic parameters.
+   */
+  get [Symbol.toStringTag]() {
+    return `${this.constructor.name}<${this.logger1.constructor.name}<${this.logger1.typeString}>, ${this.logger2.constructor.name}<${this.logger2.typeString}>>`;
   };
 };
 
