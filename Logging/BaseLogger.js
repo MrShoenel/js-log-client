@@ -29,6 +29,15 @@ class BaseLogger {
     this._logCurrentScope = true;
     /** @type {Map.<T, Array.<BaseScope.<any>>>} */
     this._scopeStacks = new Map();
+
+    this._numMessagesLogged = 0;
+  };
+
+  /**
+   * @returns {number} The amount of messages logged so far.
+   */
+  get numMessagesLogged() {
+    return this._numMessagesLogged;
   };
 
   /**
