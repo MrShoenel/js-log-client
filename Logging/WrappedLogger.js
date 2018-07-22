@@ -14,6 +14,13 @@ const LogLevel = require('./LogLevel')
  */
 class WrappedLogger extends DualLogger {
   /**
+   * Initializes a new WrappedLogger that mimics the given original logger by
+   * replicating all of its properties to itself and the copy-logger. To change
+   * a setting/property, it needs to be set on the WrappedLogger, as only that
+   * will propagate the setting to the original- and copy-logger. Modifying any
+   * of these manually will not be propagated to the respective other or the
+   * WrappedLogger itself.
+   * 
    * @param {BaseLogger.<TLogger1>} originalLogger
    * @param {BaseLogger.<TLogger2>} copyLogger
    */
@@ -43,7 +50,7 @@ class WrappedLogger extends DualLogger {
     // of the original- or  copy-logger.
     this.logger1._scopeStacks = this.logger2._scopeStacks = this._scopeStacks;
 
-    super.log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null);
+    super.log(logLevel, eventId, state, error, formatter);
   };
 
   /**
