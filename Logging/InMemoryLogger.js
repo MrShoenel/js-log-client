@@ -43,6 +43,7 @@ class InMemoryLogger extends BaseLogger {
     if (this.isEnabled(logLevel)) {
       this._msgQueue.enqueue(new InMemoryLogMessage(
         this.timeString, this.typeString, this.scopeString, logLevel, eventId, state, error, formatter));
+      this._numMessagesLogged++;
     }
   };
   

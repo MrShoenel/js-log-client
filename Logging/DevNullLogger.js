@@ -46,6 +46,7 @@ class DevNullLogger extends BaseLogger {
    * @returns {this}
    */
   log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
+    this._numMessagesLogged++;
   };
 };
 
