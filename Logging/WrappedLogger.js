@@ -10,11 +10,10 @@ const LogLevel = require('./LogLevel')
  * scopes on the WrappedLogger are functional and replicated to both other
  * loggers. The WrappedLogger mimics the original logger's type.
  * 
- * @template T
+ * @template TLogger1, TLogger2
  */
 class WrappedLogger extends DualLogger {
   /**
-   * @template TLogger1, TLogger2
    * @param {BaseLogger.<TLogger1>} originalLogger
    * @param {BaseLogger.<TLogger2>} copyLogger
    */
