@@ -121,17 +121,20 @@ class ColoredConsoleLogger extends BaseLogger {
       return; // We're not logging this
     }
 
+    this._numMessagesLogged++;
+
     const logMethod = this._getStreamForLogLevel(logLevel);
     if (logMethod === null) {
       return; // This loglevel is not to be logged to any stream
     }
 
     const timeString = this.logCurrentTime ? this.timeString : emptyStr
+    , dateString = this.logCurrentDate ? this.dateString : emptyStr
     , typeString = this.logCurrentType ? this.typeString : emptyStr
     , scopeString = this.logCurrentScope ? this.scopeString : emptyStr;
     
-    const prefix = timeString === emptyStr && typeString == emptyStr && scopeString == emptyStr ?
-      emptyStr : `${timeString}${(`${timeString === emptyStr ? '' : ' '}${typeString}`)}${scopeString}: `;
+    const prefix = timeString === emptyStr && dateString === emptyStr && typeString === emptyStr && scopeString === emptyStr ?
+      emptyStr : `${dateString}${(`${dateString === emptyStr ? '' : ' '}`)}${timeString}${(`${timeString === emptyStr ? '' : ' '}${typeString}`)}${scopeString}: `;
     const eventString = eventId === 0 || eventId.Id === 0 ?
       emptyStr : `(${eventId.Id}, ${eventId.Name}) `;
     // If state and exception are void 0/null, there is nothing to format.

@@ -25,10 +25,21 @@ class BaseLogger {
 
     this._logLevel = LogLevel.Information;
     this._logCurrentTime = true;
+    this._logCurrentDate = true;
     this._logCurrentType = true;
     this._logCurrentScope = true;
+
     /** @type {Map.<T, Array.<BaseScope.<any>>>} */
     this._scopeStacks = new Map();
+
+    this._numMessagesLogged = 0;
+  };
+
+  /**
+   * @returns {number} The amount of messages logged so far.
+   */
+  get numMessagesLogged() {
+    return this._numMessagesLogged;
   };
 
   /**
@@ -69,6 +80,20 @@ class BaseLogger {
   /**
    * @returns {Boolean}
    */
+  get logCurrentDate() {
+    return this._logCurrentDate;
+  };
+
+  /**
+   * @param {Boolean} value
+   */
+  set logCurrentDate(value) {
+    this._logCurrentDate = !!value;
+  };
+
+  /**
+   * @returns {Boolean}
+   */
   get logCurrentType() {
     return this._logCurrentType;
   };
@@ -99,6 +124,13 @@ class BaseLogger {
    */
   get timeString() {
     return (new Date()).toTimeString().split(' ')[0];
+  };
+
+  /**
+   * @returns {string} the date in the format mm/dd/yyyy
+   */
+  get dateString() {
+    return (new Date()).toLocaleDateString();
   };
 
   /**

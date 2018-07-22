@@ -41,6 +41,7 @@ class DualLogger extends BaseLogger {
   log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
     this.logger1.log(logLevel, eventId, state, error, formatter);
     this.logger2.log(logLevel, eventId, state, error, formatter);
+    this._numMessagesLogged++;
   };
 
   /**
