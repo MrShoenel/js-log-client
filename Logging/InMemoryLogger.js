@@ -51,14 +51,7 @@ class InMemoryLogger extends BaseLogger {
    * @returns {Array.<InMemoryLogMessage>}
    */
   messagesArray(order = MsgSortOrder.newestFirst) {
-    /** @type {Array.<InMemoryLogMessage>} */
-    const arr = [];
-
-    for (const msg of this.messages(order)) {
-      arr.push(msg);
-    }
-
-    return arr;
+    return [...this.messages(order)];
   };
 
   /**
