@@ -8,6 +8,9 @@ const { BaseLogger } = require('./BaseLogger');
  * to two different sinks (i.e. to a local console and to a remote server). It is
  * perfectly fine to construct a whole graph of loggers, by using one or two dual-
  * loggers as child loggers.
+ * The DualLogger however does not modify any of the child loggers' settings nor does
+ * it consider changes made to itself or logs any scopes, as those need to be used on
+ * the child loggers. The WrappedLogger however does this.
  * 
  * @template T
  */
