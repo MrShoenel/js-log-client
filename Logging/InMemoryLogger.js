@@ -28,6 +28,20 @@ class InMemoryLogger extends BaseLogger {
     /** @type {ConstrainedQueue.<InMemoryLogMessage>} */
     this._msgQueue = new ConstrainedQueue(capacity);
   };
+
+  /**
+   * @returns {number} The maximum amount of log messages this logger can store in memory.
+   */
+  get capacity() {
+    return this._msgQueue.maxSize;
+  };
+
+  /**
+   * @returns {number} The current amount of log messages stored in my memory by this logger.
+   */
+  get numMessages() {
+    return this._msgQueue.size;
+  };
   
 
   /**
@@ -103,15 +117,31 @@ class InMemoryLogMessage {
   };
 
   /**
-   * @returns {string} A formatted message as string.
+   * Clears the buffered formatted message returned from toString(). This method needs
+   * to be called if the message is modified after toString() has been called and the
+   * changes need to be reflected.
+   * 
+   * @see {toString()}
+   * @returns {this}
+   */
+  clearToString() {
+    this._toStringString = null;
+    return this;
+  };
+
+  /**
+   * @see {clearToString()}
+   * @returns {string} A formatted message as string. This method buffers the generated
+   * string so that subsequent changes to this log message will not be reflected in it.
+   * The buffered message however can be cleared using clearToString().
    */
   toString() {
     if (this._toStringString !== null) {
       return this._toStringString;
     }
 
-    const prefix = this.timeString === emptyStr && this.typeString == emptyStr && this.scopeString == emptyStr ?
-      emptyStr : `${this.timeString}${(`${this.timeString === emptyStr ? '' : ' '}${this.typeString}`)}${this.scopeString}: `;
+    const prefix = timeString === emptyStr && dateString === emptyStr && typeString === emptyStr && scopeString === emptyStr ?
+    emptyStr : `${dateString}${(`${dateString === emptyStr ? '' : ' '}`)}${timeString}${(`${timeString === emptyStr ? '' : ' '}${typeString}`)}${scopeString}: `;
     const eventString = this.eventId === 0 || this.eventId.Id === 0 ?
       emptyStr : `(${this.eventId.Id}, ${this.eventId.Name}) `;
     // If state and exception are void 0/null, there is nothing to format.
