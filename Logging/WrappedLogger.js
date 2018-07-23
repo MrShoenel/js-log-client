@@ -61,10 +61,38 @@ class WrappedLogger extends DualLogger {
   };
 
   /**
+   * @returns {number|LogLevel}
+   */
+  get logLevel() {
+    return super.logLevel;
+  };
+
+  /**
    * @param {boolean} value
    */
   set logCurrentTime(value) {
     super.logCurrentTime = this.logger1.logCurrentTime = this.logger2.logCurrentTime = !!value;
+  };
+
+  /**
+   * @returns {Boolean}
+   */
+  get logCurrentTime() {
+    return super.logCurrentTime;
+  };
+
+  /**
+   * @param {boolean} value
+   */
+  set logCurrentDate(value) {
+    super.logCurrentDate = this.logger1.logCurrentDate = this.logger2.logCurrentDate = !! value;
+  };
+
+  /**
+   * @returns {Boolean}
+   */
+  get logCurrentDate() {
+    return super.logCurrentDate;
   };
 
   /**
@@ -75,10 +103,24 @@ class WrappedLogger extends DualLogger {
   };
 
   /**
+   * @returns {Boolean}
+   */
+  get logCurrentType() {
+    return super.logCurrentType;
+  };
+
+  /**
    * @param {boolean} value
    */
   set logCurrentScope(value) {
     super.logCurrentScope = this.logger1.logCurrentScope = this.logger2.logCurrentScope = !!value;
+  };
+
+  /**
+   * @returns {Boolean}
+   */
+  get logCurrentScope() {
+    return super.logCurrentScope;
   };
 };
 
