@@ -25,12 +25,11 @@ class WrappedLogger extends DualLogger {
    * @param {BaseLogger.<TLogger2>} copyLogger
    */
   constructor(originalLogger, copyLogger) {
-    super(originalLogger.type, originalLogger, copyLogger);
-    
-    copyLogger._type = originalLogger.type;
+    super(copyLogger._type = originalLogger.type, originalLogger, copyLogger);
 
     this.logLevel = originalLogger.logLevel;
     this.logCurrentTime = originalLogger.logCurrentTime;
+    this.logCurrentDate = originalLogger.logCurrentDate;
     this.logCurrentType = originalLogger.logCurrentType;
     this.logCurrentScope = originalLogger.logCurrentScope;
   };
