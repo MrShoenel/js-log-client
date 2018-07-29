@@ -1,7 +1,7 @@
 # LogClient
 LogClient (or: `log-client`) is a universal module for nodejs or JavaScript applications in general for distributed logging using various transport methods. The concept of this logger is based on `Microsoft.Extensions.Logging`.
 
-## Install via npm
+## Install via npm <span style="vertical-align:middle">[![Current Version](https://img.shields.io/npm/v/sh.log-client.svg)](https://www.npmjs.com/package/sh.log-client)</span>
 `npm install sh.log-client`
 
 ## Included Loggers
