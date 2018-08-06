@@ -74,7 +74,7 @@ class InMemoryLogger extends BaseLogger {
   
   /**
    * @param {number} order
-   * @returns {Array.<InMemoryLogMessage>}
+   * @returns {Array.<InMemoryLogMessage.<*>>}
    */
   messagesArray(order = MsgSortOrder.newestFirst) {
     return [...this.messages(order)];
@@ -82,12 +82,28 @@ class InMemoryLogger extends BaseLogger {
 
   /**
    * @param {number} order
-   * @returns {IterableIterator.<InMemoryLogMessage>}
+   * @returns {IterableIterator.<InMemoryLogMessage.<*>>}
    */
   messages(order = MsgSortOrder.newestFirst) {
     return order === MsgSortOrder.newestFirst ?
       this._msgQueue.entriesReversed() : this._msgQueue.entries();
   };
+
+  /**
+   * @param {number} order
+   * @param {null|((msg: InMemoryLogMessage.<*>) => boolean)} filter
+   * @returns {IterableIterator.<InMemoryLogMessage.<*>>}
+   */
+  *messagesFiltered(order = MsgSortOrder.newestFirst, filter = null) {
+    filter = filter === null ? _ => true : filter;
+    
+    const it = this.messages(order);
+    for (const msg of it) {
+      if (filter(msg)) {
+        yield msg;
+      }
+    }
+  }
 };
 
 
