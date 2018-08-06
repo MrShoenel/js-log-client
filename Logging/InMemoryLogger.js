@@ -30,6 +30,17 @@ class InMemoryLogger extends BaseLogger {
   };
 
   /**
+   * @param {number} value The new capacity for logged messages kept in memory. If the
+   * value is less than the current amount of messages, excess messages will be discarded
+   * (oldest first).
+   * @throws {Error} If the value is not a number or out of range (i.e. not accepted by
+   * the underlying ConstrainedQueue).
+   */
+  set capacity(value) {
+    this._msgQueue.maxSize = value;
+  };
+
+  /**
    * @returns {number} The maximum amount of log messages this logger can store in memory.
    */
   get capacity() {
