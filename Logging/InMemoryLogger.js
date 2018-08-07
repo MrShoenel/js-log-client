@@ -66,11 +66,15 @@ class InMemoryLogger extends BaseLogger {
    */
   log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
     if (this.isEnabled(logLevel)) {
-      this._msgQueue.enqueue(new InMemoryLogMessage(
-        this.timeString, this.typeString, this.scopeString, logLevel, eventId, state, error, formatter));
+      const msg = new InMemoryLogMessage(
+        this.timeString, this.dateString, this.typeString, this.scopeString, logLevel, eventId, state, error, formatter);
+      
+      this._msgQueue.enqueue(msg);
       this._numMessagesLogged++;
       this.emit(symbolMessageLogged, new BaseLogEvent(this, null, msg));
     }
+
+    return this;
   };
   
   /**
@@ -104,7 +108,7 @@ class InMemoryLogger extends BaseLogger {
         yield msg;
       }
     }
-  }
+  };
 };
 
 
@@ -114,6 +118,7 @@ class InMemoryLogger extends BaseLogger {
 class InMemoryLogMessage {
   /**
    * @param {string} timeString
+   * @param {string} dateString
    * @param {string} typeString
    * @param {string} scopeString
    * @param {LogLevel} logLevel
@@ -121,10 +126,10 @@ class InMemoryLogMessage {
    * @param {T} state
    * @param {Error} error
    * @param {(state: T, error: Error) => string} formatter
-   * @returns {this}
    */
-  constructor(timeString, typeString, scopeString, logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
+  constructor(timeString, dateString, typeString, scopeString, logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
     this.timeString = timeString;
+    this.dateString = dateString;
     this.typeString = typeString;
     this.scopeString = scopeString;
 
@@ -168,8 +173,8 @@ class InMemoryLogMessage {
       return this._toStringString;
     }
 
-    const prefix = timeString === emptyStr && dateString === emptyStr && typeString === emptyStr && scopeString === emptyStr ?
-    emptyStr : `${dateString}${(`${dateString === emptyStr ? '' : ' '}`)}${timeString}${(`${timeString === emptyStr ? '' : ' '}${typeString}`)}${scopeString}: `;
+    const prefix = this.timeString === emptyStr && this.dateString === emptyStr && this.typeString === emptyStr && this.scopeString === emptyStr ?
+    emptyStr : `${this.dateString}${(`${this.dateString === emptyStr ? '' : ' '}`)}${this.timeString}${(`${this.timeString === emptyStr ? '' : ' '}${this.typeString}`)}${this.scopeString}: `;
     const eventString = this.eventId === 0 || this.eventId.Id === 0 ?
       emptyStr : `(${this.eventId.Id}, ${this.eventId.Name}) `;
     // If state and exception are void 0/null, there is nothing to format.
