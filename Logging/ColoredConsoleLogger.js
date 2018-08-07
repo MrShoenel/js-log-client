@@ -1,6 +1,6 @@
 require('../docs.js');
 
-const { BaseLogger } = require('./BaseLogger')
+const { BaseLogger, BaseLogEvent, symbolMessageLogged } = require('./BaseLogger')
 , LogLevel = require('./LogLevel')
 , Chalk = require('chalk')
 , util = require('util')
@@ -168,6 +168,9 @@ class ColoredConsoleLogger extends BaseLogger {
         logMethod(Chalk.magenta(wholeLogString));
         break;
     }
+    
+    this.emit(symbolMessageLogged, new BaseLogEvent(this, null, wholeLogString));
+    return this;
   };
 };
 

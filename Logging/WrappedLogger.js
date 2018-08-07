@@ -49,7 +49,7 @@ class WrappedLogger extends DualLogger {
     // of the original- or  copy-logger.
     this.logger1._scopeStacks = this.logger2._scopeStacks = this._scopeStacks;
 
-    super.log(logLevel, eventId, state, error, formatter);
+    return super.log(logLevel, eventId, state, error, formatter);
   };
 
   /**

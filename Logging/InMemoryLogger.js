@@ -1,4 +1,4 @@
-const { BaseLogger } = require('./BaseLogger')
+const { BaseLogger, BaseLogEvent, symbolMessageLogged } = require('./BaseLogger')
 , { ConstrainedQueue } = require('sh.orchestration-tools')
 , { inspect } = require('util');
 
@@ -69,6 +69,7 @@ class InMemoryLogger extends BaseLogger {
       this._msgQueue.enqueue(new InMemoryLogMessage(
         this.timeString, this.typeString, this.scopeString, logLevel, eventId, state, error, formatter));
       this._numMessagesLogged++;
+      this.emit(symbolMessageLogged, new BaseLogEvent(this, null, msg));
     }
   };
   
