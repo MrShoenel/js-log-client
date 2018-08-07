@@ -23,6 +23,7 @@
     "chalk": "^2.4.1",
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
+    "rxjs": "^6.2.2",
     "sh.orchestration-tools": "^2.10.2"
   }
 }
