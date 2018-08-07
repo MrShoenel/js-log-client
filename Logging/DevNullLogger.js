@@ -1,6 +1,6 @@
 require('../docs.js');
 
-const { BaseLogger } = require('./BaseLogger')
+const { BaseLogger, BaseLogEvent, symbolMessageLogged } = require('./BaseLogger')
 , LogLevel = require('./LogLevel');
 
 
@@ -24,16 +24,6 @@ class DevNullLogger extends BaseLogger {
   };
 
   /**
-   * This logger is enabled for all levels at all times.
-   * 
-   * @param {LogLevel} logLevel 
-   * @returns {boolean}
-   */
-  isEnabled(logLevel) {
-    return true;
-  };
-
-  /**
    * Any message logged through this method is discarded entirely. No action is
    * taken at all (i.e. the message is thrown away).
    * 
@@ -46,7 +36,13 @@ class DevNullLogger extends BaseLogger {
    * @returns {this}
    */
   log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
-    this._numMessagesLogged++;
+    if (this.isEnabled(logLevel)) {
+      this._numMessagesLogged++;
+      this.emit(symbolMessageLogged,
+        new BaseLogEvent(this, null, logLevel, eventId, state, error, formatter));
+    }
+
+    return this;
   };
 };
 

@@ -1,4 +1,4 @@
-const { BaseLogger } = require('./BaseLogger');
+const { BaseLogger, BaseLogEvent, symbolMessageLogged } = require('./BaseLogger');
 
 
 /**
@@ -42,6 +42,10 @@ class DualLogger extends BaseLogger {
     this.logger1.log(logLevel, eventId, state, error, formatter);
     this.logger2.log(logLevel, eventId, state, error, formatter);
     this._numMessagesLogged++;
+    this.emit(symbolMessageLogged,
+      new BaseLogEvent(this, null, logLevel, eventId, state, error, formatter));
+
+    return this;
   };
 
   /**

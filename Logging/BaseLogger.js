@@ -1,7 +1,29 @@
 require('../docs.js');
 
 const LogLevel = require('./LogLevel')
-, emptyStr = '';
+, { EventEmitter } = require('events')
+, { fromEvent, Observable } = require('rxjs')
+, emptyStr = ''
+, symbolMessageLogged = Symbol('messageLogged')
+, symbolBeginScope = Symbol('beginScope')
+, symboleEndScope = Symbol('endScope');
+
+
+/**
+ * @template T
+ */
+class BaseLogEvent {
+  /**
+   * @param {BaseLogger.<T>} logger
+   * @param {BaseScope.<T>} [scope] Optional. Defaults to null.
+   * @param {...any} [params] Optional trailing parameters.
+   */
+  constructor(logger, scope = null, ...params) {
+    this.logger = logger;
+    this.scope = scope;
+    this.params = params;
+  };
+};
 
 
 /**
@@ -11,17 +33,21 @@ const LogLevel = require('./LogLevel')
  * 
  * @author Sebastian Hönel <development@hoenel.net>
  */
-class BaseLogger {
+class BaseLogger extends EventEmitter {
   /**
    * @param {T|Function|string} typeOrClassOrCtorFunc The concept behind the logger
    * is that it is type-specific. There are no generics in JavaScript, so you may
    * specify a type by its name or use some context-identifying string.
    */
   constructor(typeOrClassOrCtorFunc) {
+    super();
     this._type = typeOrClassOrCtorFunc;
     if (typeof typeOrClassOrCtorFunc !== 'function' && typeof typeOrClassOrCtorFunc !== 'string') {
       throw new Error(`The given type, class or constructor is not a string or (constructor-) function: '${JSON.stringify(typeOrClassOrCtorFunc)}'.`);
     }
+    
+    /** @type {Observable.<BaseLogEvent.<T>>} */
+    this.observableMessagesLogged = fromEvent(this, symbolMessageLogged);
 
     this._logLevel = LogLevel.Information;
     this._logCurrentTime = true;
@@ -183,6 +209,7 @@ class BaseLogger {
 
     const scope = new BaseScope(state, this);
     this._scopeStacks.get(this.type).push(scope);
+    this.emit(symbolBeginScope, new BaseLogEvent(this, scope));
     return scope;
   };
 
@@ -202,7 +229,7 @@ class BaseLogger {
     }
 
     stack.pop();
-
+    this.emit(symboleEndScope, new BaseLogEvent(this, scope));
     return this;
   };
 
@@ -377,5 +404,9 @@ class BaseScope {
 
 module.exports = Object.freeze({
   BaseLogger,
-  BaseScope
+  BaseScope,
+  BaseLogEvent,
+  symbolMessageLogged,
+  symbolBeginScope,
+  symboleEndScope
 });
