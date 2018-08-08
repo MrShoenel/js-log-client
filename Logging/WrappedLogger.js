@@ -47,7 +47,19 @@ class WrappedLogger extends DualLogger {
     // We have to set this up every time immediately before calling log(),
     // to avoid race-conditions when logging async with the same instance
     // of the original- or  copy-logger.
-    this.logger1._scopeStacks = this.logger2._scopeStacks = this._scopeStacks;
+    this.logger2._scopeStacks = this.logger1._scopeStacks = this._scopeStacks;
+
+    // The setters below are necessary in a scenario where the SAME logger
+    // (logger2) is given to various clients (e.g. returning a WrappedLogger
+    // with a genuine logger1 (original) and always the same instance for
+    // logger2 (copy-logger)). In that case, when logging on the WrappedLogger,
+    // logger2 needs to reflect the most recent/current context.
+    this.logger2._type = this.type;
+    this.logger2.logLevel = this.logLevel;
+    this.logger2.logCurrentTime = this.logCurrentTime;
+    this.logger2.logCurrentDate = this.logCurrentDate;
+    this.logger2.logCurrentType = this.logCurrentType;
+    this.logger2.logCurrentScope = this.logCurrentScope;
 
     return super.log(logLevel, eventId, state, error, formatter);
   };

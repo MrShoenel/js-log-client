@@ -178,12 +178,16 @@ class BaseLogger extends EventEmitter {
    * @returns {string}
    */
   get scopeString() {
-    if (this._scopeStacks.size === 0) {
+    if (!this._scopeStacks.has(this.type)) {
       return emptyStr;
     }
 
-    const scopeVals = Array.from(...this._scopeStacks.values());
-    return `[${scopeVals.map(scope => scope.toString()).join(', ')}]`;
+    const scopeStack = this._scopeStacks.get(this.type);
+    if (scopeStack.length === 0) {
+      return emptyStr;
+    }
+
+    return `[${scopeStack.map(scope => scope.toString()).join(', ')}]`;
   };
 
   /**
@@ -234,32 +238,34 @@ class BaseLogger extends EventEmitter {
   };
 
   /**
-   * @template TState
+   * @template TState, TReturn
    * @param {TState} state 
-   * @param {(this: BaseScope.<TState>, scope: BaseScope.<TState>, logger: BaseLogger.<T>) => void} fn
+   * @param {(this: BaseScope.<TState>, scope: BaseScope.<TState>, logger: BaseLogger.<T>) => TReturn} fn
    * a function that will wrap the scope and automatically dispose it when it finishes
+   * @returns {TReturn}
    */
   withScope(state, fn) {
     const scope = this.beginScope(state);
 
     try {
-      fn.apply(scope, [scope, this])
+      return fn.apply(scope, [scope, this])
     } finally {
       this.endScope(scope);
     }
   };
 
   /**
-   * @template TState
+   * @template TState, TReturn
    * @param {TState} state 
-   * @param {(this: BaseScope.<TState>, scope: BaseScope.<TState>, logger: BaseLogger.<T>) => Promise.<void>} asyncFn
+   * @param {(this: BaseScope.<TState>, scope: BaseScope.<TState>, logger: BaseLogger.<T>) => Promise.<TReturn>} asyncFn
    * a function that will wrap the scope and automatically dispose it when it finishes
+   * @returns {TReturn}
    */
   async withScopeAsync(state, asyncFn) {
     const scope = this.beginScope(state);
 
     try {
-      await asyncFn.apply(scope, [scope, this]);
+      return await asyncFn.apply(scope, [scope, this]);
     } finally {
       this.endScope(scope);
     }
@@ -286,7 +292,15 @@ class BaseLogger extends EventEmitter {
    * @returns {this}
    */
   _log(logLevel, message, ...args) {
-    return this.log(logLevel, 0, args.length === 0 ? message : [message, ...args]);
+    if (args.length === 0) {
+      return this.log(logLevel, 0, message);
+    } else if (args.length === 1) {
+      if (args[0] instanceof Error) {
+        return this.log(logLevel, 0, message, args[0]);
+      }
+    }
+
+    return this.log(logLevel, 0, [message, ...args]);
   };
 
   /**
@@ -344,7 +358,7 @@ class BaseLogger extends EventEmitter {
   };
 
   /**
-   * So that Object.prototype.toString.call(new BaseLogger()) results in [object BaseLogger].
+   * So that Object.prototype.toString.call(new BaseLogger()) results in [object BaseLogger<this.typeString>].
    * 
    * @returns {string}
    */
