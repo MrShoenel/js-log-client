@@ -292,7 +292,15 @@ class BaseLogger extends EventEmitter {
    * @returns {this}
    */
   _log(logLevel, message, ...args) {
-    return this.log(logLevel, 0, args.length === 0 ? message : [message, ...args]);
+    if (args.length === 0) {
+      return this.log(logLevel, 0, message);
+    } else if (args.length === 1) {
+      if (args[0] instanceof Error) {
+        return this.log(logLevel, 0, message, args[0]);
+      }
+    }
+
+    return this.log(logLevel, 0, [message, ...args]);
   };
 
   /**
