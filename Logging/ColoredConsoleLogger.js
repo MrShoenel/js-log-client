@@ -144,7 +144,7 @@ class ColoredConsoleLogger extends BaseLogger {
     const stateAndExString = state === void 0 && error === null ? emptyStr :
       (formatter instanceof Function ? `${formatter(state, exception)}` :
       (state === void 0 ? emptyStr : `${typeof state === 'string' ? state : util.inspect(state)}` +
-      `${(error === null ? emptyStr : `, ${error.message}`)}`));
+      `${(error === null ? emptyStr : ` Stack: ${this.error.stack}`)}`));
 
     const wholeLogString = `${prefix}${eventString}${stateAndExString}`.trim();
 

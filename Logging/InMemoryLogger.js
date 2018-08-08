@@ -184,7 +184,7 @@ class InMemoryLogMessage {
     const stateAndExString = this.state === void 0 && this.error === null ? emptyStr :
       (this.formatter instanceof Function ? `${this.formatter(this.state, this.exception)}` :
       (this.state === void 0 ? emptyStr : `${typeof this.state === 'string' ? this.state : inspect(this.state)}` +
-      `${(this.error === null ? emptyStr : `, ${this.error.message}`)}`));
+      `${(this.error === null ? emptyStr : ` Stack: ${this.error.stack}`)}`));
 
     return this._toStringString = `${prefix}${eventString}${stateAndExString}`.trim();
   };
