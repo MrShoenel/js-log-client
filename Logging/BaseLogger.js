@@ -183,11 +183,7 @@ class BaseLogger extends EventEmitter {
     }
 
     const scopeStack = this._scopeStacks.get(this.type);
-    if (scopeStack.length === 0) {
-      return emptyStr;
-    }
-
-    return `[${scopeStack.map(scope => scope.toString()).join(', ')}]`;
+    return scopeStack.map(scope => `[${scope.toString()}]`).join('');
   };
 
   /**
