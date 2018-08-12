@@ -13,6 +13,7 @@ Currently, this client includes the following loggers:
 * __`InMemoryLogger<T>`__ and __`InMemoryLogMessage<T>`__ a logger and its message to store log messages in memory. Supports specifying a maximum capacity so that only the newest messages are kept.
 * __`DualLogger<T, TLog1, TLog2>`__ a logger that forwards all logging-calls to two other loggers without modifying them.
 * __`WrappedLogger<TLog1, TLog2>`__ a logger that wraps and mimics an original logger (`TLog1`) and also forwards any logging calls to a 2nd copy-logger (`TLog2`). This is an extension to the *DualLogger*.
+* __`StreamLogger<T>`__ a logger that writes messages to a `Writable`-stream. Supports different streams per log level.
 
 ## Write and contribute your own Loggers
 Writing an own logger is as simple as extending `BaseLogger<T>`. Please, submit a _pull-request_ if you want to contribute your own logger to this repository.

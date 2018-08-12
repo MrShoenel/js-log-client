@@ -11,7 +11,8 @@ const LogLevel = require('./Logging/LogLevel')
 , { DevNullLogger } = require('./Logging/DevNullLogger')
 , { InMemoryLogger, InMemoryLogMessage, MsgSortOrder } = require('./Logging/InMemoryLogger')
 , { DualLogger } = require('./Logging/DualLogger')
-, { WrappedLogger } = require('./Logging/WrappedLogger');
+, { WrappedLogger } = require('./Logging/WrappedLogger')
+, { StreamLogger } = require('./Logging/StreamLogger');
 
 
 module.exports = Object.freeze({
@@ -25,5 +26,6 @@ module.exports = Object.freeze({
   DevNullLogger,
   InMemoryLogger, InMemoryLogMessage, MsgSortOrder,
   DualLogger,
-  WrappedLogger
+  WrappedLogger,
+  StreamLogger
 });
