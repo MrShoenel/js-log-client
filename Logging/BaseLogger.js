@@ -186,6 +186,28 @@ class BaseLogger extends EventEmitter {
     this._scopeStacks = new Map();
 
     this._numMessagesLogged = 0;
+    this._formatter = BaseLogger.defaultFormatter;
+  };
+
+  /**
+   * @returns {Formatter}
+   */
+  static get defaultFormatter() {
+    return defaultFormatter;
+  };
+
+  /**
+   * @returns {Formatter}
+   */
+  get formatter() {
+    return this._formatter;
+  };
+
+  /**
+   * @param {Formatter} value
+   */
+  set formatter(value) {
+    this._formatter = value;
   };
 
   /**
@@ -396,12 +418,15 @@ class BaseLogger extends EventEmitter {
   
 
   /**
+   * This method emits symbolBeforeLogMessage and symbolAfterLogMessage when entering/
+   * exiting respectively. These can therefore be used to intercept calls.
+   * 
    * @template TState
-   * @param {LogLevel} logLevel
-   * @param {LogEvent|number} eventId
-   * @param {TState} state
-   * @param {Error} error
-   * @param {(state: TState, error: Error) => string} formatter
+   * @param {LogLevel} [logLevel] Optional. Defaults to LogLevel.Information.
+   * @param {LogEvent|number} [eventId] Optiona. Defaults to 0.
+   * @param {TState} [state] Optional. Defaults to undefined.
+   * @param {Error} [error] Optional. Defaults to null.
+   * @param {(state: TState, error: Error) => string} [formatter] Optional. Defaults to the currently set formatter.
    * @returns {this}
    */
   log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
