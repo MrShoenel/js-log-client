@@ -6,7 +6,9 @@ const LogLevel = require('./LogLevel')
 , emptyStr = ''
 , symbolMessageLogged = Symbol('messageLogged')
 , symbolBeginScope = Symbol('beginScope')
-, symboleEndScope = Symbol('endScope');
+, symboleEndScope = Symbol('endScope')
+, symbolBeforeLogMessage = Symbol('beforeLogMessage')
+, symbolAfterLogMessage = Symbol('afterLogMessage');
 
 
 /**
@@ -418,5 +420,7 @@ module.exports = Object.freeze({
   BaseLogEvent,
   symbolMessageLogged,
   symbolBeginScope,
-  symboleEndScope
+  symboleEndScope,
+  symbolBeforeLogMessage,
+  symbolAfterLogMessage
 });
