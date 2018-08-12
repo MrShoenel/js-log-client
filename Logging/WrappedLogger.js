@@ -1,5 +1,5 @@
 const LogLevel = require('./LogLevel')
-, { BaseLogger, symbolBeforeLogMessage, symbolAfterLogMessage } = require('./BaseLogger')
+, { BaseLogger, BaseLogEvent, symbolBeforeLogMessage, symbolAfterLogMessage } = require('./BaseLogger')
 , { DualLogger } = require('./DualLogger');
 
 
