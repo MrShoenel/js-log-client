@@ -28,11 +28,12 @@ class DevNullLogger extends BaseLogger {
    * taken at all (i.e. the message is thrown away).
    * 
    * @template TState
-   * @param {LogLevel} logLevel
-   * @param {LogEvent|number} eventId
-   * @param {TState} state
-   * @param {Error} error
-   * @param {(state: TState, error: Error) => string} formatter
+   * @inheritDoc
+   * @param {LogLevel} [logLevel]
+   * @param {LogEvent|number} [eventId]
+   * @param {TState} [state]
+   * @param {Error} [error]
+   * @param {(state: TState, error: Error) => string} for[matter
    * @returns {this}
    */
   log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {

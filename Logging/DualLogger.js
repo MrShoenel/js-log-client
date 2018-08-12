@@ -1,4 +1,4 @@
-const { BaseLogger, BaseLogEvent, symbolMessageLogged } = require('./BaseLogger');
+const { BaseLogger, BaseLogEvent, symbolMessageLogged, symbolBeforeLogMessage, symbolAfterLogMessage } = require('./BaseLogger');
 
 
 /**
@@ -31,14 +31,18 @@ class DualLogger extends BaseLogger {
 
   /**
    * @template TState
-   * @param {LogLevel} logLevel
-   * @param {LogEvent|number} eventId
-   * @param {TState} state
-   * @param {Error} error
-   * @param {(state: TState, error: Error) => string} formatter
+   * @inheritDoc
+   * @param {LogLevel} [logLevel]
+   * @param {LogEvent|number} [eventId]
+   * @param {TState} [state]
+   * @param {Error} [error]
+   * @param {(state: TState, error: Error) => string} [formatter]
    * @returns {this}
    */
   log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
+    this.emit(symbolBeforeLogMessage, new BaseLogEvent(this));
+
+    try {
     this.logger1.log(logLevel, eventId, state, error, formatter);
     this.logger2.log(logLevel, eventId, state, error, formatter);
     this._numMessagesLogged++;
@@ -46,6 +50,9 @@ class DualLogger extends BaseLogger {
       new BaseLogEvent(this, null, logLevel, eventId, state, error, formatter));
 
     return this;
+    } finally {
+      this.emit(symbolAfterLogMessage, new BaseLogEvent(this));
+    }
   };
 
   /**

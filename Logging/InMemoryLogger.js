@@ -1,4 +1,4 @@
-const { BaseLogger, BaseLogEvent, symbolMessageLogged } = require('./BaseLogger')
+const { BaseLogger, BaseLogEvent, symbolMessageLogged, defaultEventFormatter, symbolBeforeLogMessage, symbolAfterLogMessage } = require('./BaseLogger')
 , { ConstrainedQueue } = require('sh.orchestration-tools')
 , { inspect } = require('util');
 
@@ -57,17 +57,22 @@ class InMemoryLogger extends BaseLogger {
 
   /**
    * @template TState
-   * @param {LogLevel} logLevel
-   * @param {LogEvent|number} eventId
-   * @param {TState} state
-   * @param {Error} error
-   * @param {(state: TState, error: Error) => string} formatter
+   * @inheritDoc
+   * @param {LogLevel} [logLevel]
+   * @param {LogEvent|number} [eventId]
+   * @param {TState} [state]
+   * @param {Error} [error]
+   * @param {(state: TState, error: Error) => string} [formatter]
    * @returns {this}
    */
   log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
+    this.emit(symbolBeforeLogMessage, new BaseLogEvent(this));
+
+    try {
     if (this.isEnabled(logLevel)) {
       const msg = new InMemoryLogMessage(
-        this.timeString, this.dateString, this.typeString, this.scopeString, logLevel, eventId, state, error, formatter);
+        this.timeString, this.dateString, this.typeString, this.scopeString,
+        logLevel, formatter || this.formatter, eventId, state, error);
       
       this._msgQueue.enqueue(msg);
       this._numMessagesLogged++;
@@ -75,6 +80,8 @@ class InMemoryLogger extends BaseLogger {
     }
 
     return this;
+  } finally {
+    this.emit(symbolAfterLogMessage, new BaseLogEvent(this));}
   };
   
   /**
@@ -122,12 +129,12 @@ class InMemoryLogMessage {
    * @param {string} typeString
    * @param {string} scopeString
    * @param {LogLevel} logLevel
-   * @param {LogEvent|number} eventId
-   * @param {T} state
-   * @param {Error} error
    * @param {(state: T, error: Error) => string} formatter
+   * @param {LogEvent|number} [eventId]
+   * @param {T} [state]
+   * @param {Error} [error]
    */
-  constructor(timeString, dateString, typeString, scopeString, logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
+  constructor(timeString, dateString, typeString, scopeString, logLevel = LogLevel.Information, formatter, eventId = 0, state = void 0, error = null) {
     this.timeString = timeString;
     this.dateString = dateString;
     this.typeString = typeString;
@@ -175,16 +182,8 @@ class InMemoryLogMessage {
 
     const prefix = this.timeString === emptyStr && this.dateString === emptyStr && this.typeString === emptyStr && this.scopeString === emptyStr ?
     emptyStr : `${this.dateString}${(`${this.dateString === emptyStr ? '' : ' '}`)}${this.timeString}${(`${this.timeString === emptyStr ? '' : ' '}${this.typeString}`)}${this.scopeString}: `;
-    const eventString = this.eventId === 0 || this.eventId.Id === 0 ?
-      emptyStr : `(${this.eventId.Id}, ${this.eventId.Name}) `;
-    // If state and exception are void 0/null, there is nothing to format.
-    // Else, check if there is a formatter and use it. If there is
-    // no formatter, call inspect() on the state and append the
-    // exception's message, if there is an exception.
-    const stateAndExString = this.state === void 0 && this.error === null ? emptyStr :
-      (this.formatter instanceof Function ? `${this.formatter(this.state, this.exception)}` :
-      (this.state === void 0 ? emptyStr : `${typeof this.state === 'string' ? this.state : inspect(this.state)}` +
-      `${(this.error === null ? emptyStr : ` Stack: ${this.error.stack}`)}`));
+    const eventString = defaultEventFormatter(this.eventId)
+    , stateAndExString = this.formatter(this.state, this.error);
 
     return this._toStringString = `${prefix}${eventString}${stateAndExString}`.trim();
   };
