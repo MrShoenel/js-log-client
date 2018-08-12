@@ -1,6 +1,6 @@
 require('../docs.js');
 
-const { BaseLogger, BaseLogEvent, symbolMessageLogged } = require('./BaseLogger')
+const { BaseLogger, BaseLogEvent, symbolMessageLogged, symbolBeforeLogMessage, symbolAfterLogMessage } = require('./BaseLogger')
 , LogLevel = require('./LogLevel');
 
 
@@ -37,13 +37,18 @@ class DevNullLogger extends BaseLogger {
    * @returns {this}
    */
   log(logLevel = LogLevel.Information, eventId = 0, state = void 0, error = null, formatter = null) {
-    if (this.isEnabled(logLevel)) {
-      this._numMessagesLogged++;
-      this.emit(symbolMessageLogged,
-        new BaseLogEvent(this, null, logLevel, eventId, state, error, formatter));
-    }
+    this.emit(symbolBeforeLogMessage, new BaseLogEvent(this));
 
-    return this;
+    try {
+      if (this.isEnabled(logLevel)) {
+        this._numMessagesLogged++;
+        this.emit(symbolMessageLogged,
+          new BaseLogEvent(this, null, logLevel, eventId, state, error, formatter));
+      }
+      return this;
+    } finally {
+      this.emit(symbolAfterLogMessage, new BaseLogEvent(this));
+    }
   };
 };
 
