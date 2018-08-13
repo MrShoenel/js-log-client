@@ -119,9 +119,11 @@ describe('Suite to test that the loggers do not throw', function() {
       wra.logTrace('trace');
       wra.logError('error', 1, true);
       wra.logInfo(void 0, {});
-      wra.logWarning('warn', {}, new Error, 'foo');
+      wra.logWarning('warn', {}, new Error, 'foo', [void 0, null]);
       wra.logDebug('debug');
-      wra.logCritical();
+      wra.withScope('SCOPE', () => {
+        wra.log(LogLevel.Information, { bla: false }, 'state 42');
+      });
     });
 
     done();
