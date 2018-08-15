@@ -15,6 +15,10 @@ Currently, this client includes the following loggers:
 * __`WrappedLogger<TLog1, TLog2>`__ a logger that wraps and mimics an original logger (`TLog1`) and also forwards any logging calls to a 2nd copy-logger (`TLog2`). This is an extension to the *DualLogger*.
 * __`StreamLogger<T>`__ a logger that writes messages to a `Writable`-stream. Supports different streams per log level.
 
+## Included Extras
+Currently, these extras are included:
+* __`LoggerPipe`__ is a `Writable` stream that encapsulates any of the above loggers and writes (pipes) all chunks to its log-method. This class is useful when a stream shall be piped to a logger (e.g. when having a logger for each of a process' streams).
+
 ## Write and contribute your own Loggers
 Writing an own logger is as simple as extending `BaseLogger<T>`. Please, submit a _pull-request_ if you want to contribute your own logger to this repository.
 

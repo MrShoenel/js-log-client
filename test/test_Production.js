@@ -11,7 +11,8 @@ const { assert } = require('chai')
   InMemoryLogger, InMemoryLogMessage, MsgSortOrder,
   DualLogger,
   WrappedLogger,
-  StreamLogger
+  StreamLogger,
+  LoggerPipe
 } = require('../index');
 
 
@@ -43,6 +44,7 @@ describe('Suite to test that the loggers do not throw', function() {
     
     assert.doesNotThrow(() => {
       const x = `${b.logCurrentDate}${b.logCurrentScope}${b.logCurrentTime}${b.logCurrentType}`;
+      x.toString();
     });
   });
 
@@ -127,5 +129,18 @@ describe('Suite to test that the loggers do not throw', function() {
     });
 
     done();
+  });
+
+  it('should pipe to an encapsulated logger', async() => {
+    const inm = new InMemoryLogger('Foo')
+    , str = new LoggerPipe(inm);
+
+    const r = new (require('stream').Readable)();
+    r.pipe(str);
+    r.push('42');
+    r.push(null);
+
+    await this.timeout(100);
+    assert.strictEqual(inm.numMessagesLogged, 1);
   });
 });
