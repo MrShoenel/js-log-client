@@ -13,7 +13,8 @@ const { assert } = require('chai')
   WrappedLogger,
   StreamLogger,
   LoggerPipe
-} = require('../index');
+} = require('../index')
+, { timeout } = require('sh.orchestration-tools');
 
 
 describe('Suite to test that the loggers do not throw', function() {
@@ -140,7 +141,7 @@ describe('Suite to test that the loggers do not throw', function() {
     r.push('42');
     r.push(null);
 
-    await this.timeout(100);
+    await timeout(50);
     assert.strictEqual(inm.numMessagesLogged, 1);
   });
 });
